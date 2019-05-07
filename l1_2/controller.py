@@ -1,5 +1,5 @@
 import re
-from operator import attrgetter
+from operator import attrgetter, not_
 
 
 class Animation:
@@ -29,10 +29,7 @@ class Animation:
                 li = 0
 
             if self.buffer == '':
-                aa = []
-                for i in self.fields:
-                    if not attrgetter(i)(self):
-                        aa.append(f"'{i}'")
+                aa = [f"'{i}'" for i in self.fields if not attrgetter(i)(self)]
 
                 if not self.frames_position:
                     aa.append("'animation'")
@@ -41,17 +38,17 @@ class Animation:
 
             for i in self.fields:
                 if not attrgetter(i)(self):
-                    m = re.search(f'\'{i}\'|"{i}"\s*:\s*(\d+)', self.buffer)
+                    m = re.search(fr'"{i}": (\d+)', self.buffer)
                     if m:
                         setattr(self, i, int(m.group(1)))
                         li = max(li, m.span()[1])
 
-            m = re.search('\'animation\'|"animation"\s*:\s*\[', self.buffer)
+            m = re.search(r'"animation": \[', self.buffer)
             if m:
-                self.frames_position = m.span()[1] - 1
+                self.frames_position = m.span()[1] - 1#???????????????????????????????
                 li = max(li, self.frames_position + 1)
 
-            if all([attrgetter(i)(self) for i in self.fields] + [self.frames_position]):
+            if all(attrgetter('frames_position', *self.fields)(self)):
                 self.length = self.width * self.height
                 return
 
@@ -69,7 +66,7 @@ class Animation:
 
         i = 0
         while i < self.length:
-            l = [*re.finditer('\[\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*]', self.buffer), ][:self.length - i]
+            l = [*re.finditer(r'\[\d{1,3}, \d{1,3}, \d{1,3}]', self.buffer), ][:self.length - i]
             i += len(l)
             for j in l:
                 current_frame.append(eval(j.group(0)))

@@ -4,7 +4,7 @@ import os
 import json
 
 from l1_2 import generator
-from l1_2 import controller
+from l1_2 import controller1
 
 random.seed()
 
@@ -20,20 +20,16 @@ class TestController(unittest.TestCase):
         generator.generate(cls.path, 100, 100, 50)
 
     def test_animation(self):
-        with open(self.path, 'r') as f:
+        with open(self.path) as f:
             j = json.load(f)
 
-        a = controller.Animation(self.path, 500000)
-        a.init()
+        a = controller1.Animation(self.path, 500000)
 
         self.assertEqual(j['width'], a.width)
         self.assertEqual(j['height'], a.height)
         self.assertEqual(j['frames'], a.frames)
 
-        for f1, f2 in zip(j['animation'], a):
-            # print(f1)
-            # print(f2)
-            self.assertEqual(f1, f2)
+        self.assertEqual(j['animation'], [*iter(a)])
 
     @classmethod
     def tearDownClass(cls):

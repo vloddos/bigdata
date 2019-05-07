@@ -9,8 +9,10 @@ def generate(path, width, height, frames):
                 'width': width,
                 'height': height,
                 'frames': frames,
-                'animation': [[[randint(0, 255) for i in range(3)] for j in range(width * height)] for k in
-                              range(frames)]
+                'animation': [
+                    [[randint(0, 255) for i in range(3)] for j in range(width * height)]
+                    for k in range(frames)
+                ]
             },
             f
         )
