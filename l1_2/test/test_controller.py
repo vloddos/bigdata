@@ -4,7 +4,7 @@ import os
 import json
 
 from l1_2 import generator
-from l1_2 import controller1
+from l1_2 import controller
 
 random.seed()
 
@@ -23,7 +23,7 @@ class TestController(unittest.TestCase):
         with open(self.path) as f:
             j = json.load(f)
 
-        a = controller1.Animation(self.path, 500000)
+        a = controller.Animation(self.path, 500000)
 
         self.assertEqual(j['width'], a.width)
         self.assertEqual(j['height'], a.height)

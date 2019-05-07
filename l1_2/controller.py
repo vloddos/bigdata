@@ -1,56 +1,29 @@
 import re
-from operator import attrgetter, not_
 
 
 class Animation:
-    buffer = ''
-    fields = ['width', 'height', 'frames']
+    # buffer = ''
 
-    width = None
-    height = None
-    frames = None
-
-    frames_position = None
+    # нет проверки на количество переменных/значений при множественном присвоении в классе
+    # width, height, frames, frames_position = [None] * 4  # syntax???
 
     def __init__(self, path: str, buffer_size: int):
-        self.file = open(path, 'r')
+        self.file = open(path)
         self.buffer_size = buffer_size
+
+        m = re.search(
+            r'{"width": (\d+), "height": (\d+), "frames": (\d+), "animation": \[',
+            self._read(100)
+        )
+        if m:
+            self.width, self.height, self.frames, self.frames_position = *map(int, m.group(1, 2, 3)), m.span()[1] - 1
+            self.length = self.width * self.height
+        else:
+            self.file.close()
+            raise ValueError("'json object has wrong format")
 
     def _read(self, size):
         return self.file.read(size)
-
-    def init(self):
-        li = 0
-        while True:
-            if not li:
-                self.buffer = self._read(self.buffer_size)
-            else:
-                self.buffer = self.buffer[li:] + self._read(li)
-                li = 0
-
-            if self.buffer == '':
-                aa = [f"'{i}'" for i in self.fields if not attrgetter(i)(self)]
-
-                if not self.frames_position:
-                    aa.append("'animation'")
-
-                raise AttributeError(f"'json' object has no attributes: {', '.join(aa)}")
-
-            for i in self.fields:
-                if not attrgetter(i)(self):
-                    m = re.search(fr'"{i}": (\d+)', self.buffer)
-                    if m:
-                        setattr(self, i, int(m.group(1)))
-                        li = max(li, m.span()[1])
-
-            m = re.search(r'"animation": \[', self.buffer)
-            if m:
-                self.frames_position = m.span()[1] - 1#???????????????????????????????
-                li = max(li, self.frames_position + 1)
-
-            if all(attrgetter('frames_position', *self.fields)(self)):
-                self.length = self.width * self.height
-                return
 
     def __iter__(self):
         self.file.seek(self.frames_position)
@@ -68,14 +41,13 @@ class Animation:
         while i < self.length:
             l = [*re.finditer(r'\[\d{1,3}, \d{1,3}, \d{1,3}]', self.buffer), ][:self.length - i]
             i += len(l)
-            for j in l:
-                current_frame.append(eval(j.group(0)))
-
+            current_frame += [eval(j.group(0)) for j in l]
             li = l[-1].span()[1]
             self.buffer = self.buffer[li:] + self._read(li)
 
         self.current_frame_index += 1
         return current_frame
 
-    def __del__(self):  # ???
-        self.file.close()
+    def __del__(self):
+        if not self.file.closed:
+            self.file.close()
