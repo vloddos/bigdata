@@ -2,11 +2,7 @@ import re
 
 
 class Animation:
-    # buffer = ''
-
-    # нет проверки на количество переменных/значений при множественном присвоении в классе
-    # width, height, frames, frames_position = [None] * 4  # syntax???
-
+    
     def __init__(self, path: str, buffer_size: int):
         self.file = open(path)
         self.buffer_size = buffer_size
