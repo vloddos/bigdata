@@ -17,32 +17,36 @@ for i in l:
         m[i2v[i]][i2v[j]] = m[i2v[j]][i2v[i]] = True
 
 used = [False] * n
-c = []
+
+
+# c = []
 
 
 def dfs(v, c):
+    used[v] = True
     for u in range(n):
         if m[v][u] and not used[u]:
-            used[u] = True
-            c = dfs(u, c)
+            # used[u] = True
+            dfs(u, c)
     c += [v]
     return c
 
 
-for i in range(n):
-    if not used[i]:
-        used[i] = True
-        c += [dfs(i, [])]
+c = [dfs(i, []) for i in range(n) if not used[i]]
+# for i in range(n):
+#     if not used[i]:
+#         used[i] = True
+#         c += [dfs(i, [])]
 
 print('components')
 for i, j in enumerate(c):
-    print(f'{i}:{j}')
-
-print(f'total:{len(c)}')
-
-for i in c:
+    print(f'{i}:{[v2i[k] for k in j]}')
     f = pp.figure()
     g = nx.Graph()
-    g.add_edges_from((v2i[j], v2i[k]) for j in i for k in i if m[j][k])  # repeat edges?
+    g.add_edges_from((v2i[k], v2i[o]) for k in j for o in j if m[k][o])  # repeat edges?
     nx.draw(g, with_labels=True)
+    f.suptitle(f'component {i}')
     f.show()
+
+print(f'total:{len(c)}')
+# print(v == {v2i[i] for i in sum(c, [])}) #debug
