@@ -43,6 +43,7 @@ for i, j in enumerate(c):
     print(f'{i}:{[v2i[k] for k in j]}')
     f = pp.figure()
     g = nx.Graph()
+    g.add_nodes_from(v2i[k] for k in j)
     g.add_edges_from((v2i[k], v2i[o]) for k in j for o in j if m[k][o])  # repeat edges?
     nx.draw(g, with_labels=True)
     f.suptitle(f'component {i}')
