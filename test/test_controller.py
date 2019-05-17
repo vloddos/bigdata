@@ -3,8 +3,8 @@ import random
 import os
 import json
 
-from l1_2 import generator
-from l1_2 import controller
+from l2 import controller
+from test import generator
 
 random.seed()
 

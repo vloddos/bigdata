@@ -1,5 +1,5 @@
 import tkinter
-from .controller import Animation
+from l2.controller import Animation
 
 
 class Drawer:
