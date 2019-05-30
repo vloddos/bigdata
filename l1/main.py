@@ -1,8 +1,6 @@
 from json import load
 import tkinter
 from threading import Lock
-from time import sleep
-from multiprocessing import Process
 
 
 def draw(canvas: tkinter.Canvas, frames):

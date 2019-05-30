@@ -21,5 +21,4 @@ def dfs(v, c):
     return c
 
 
-c = [dfs(i, []) for i in l if i not in used]
-print(len(c))
+print(len([dfs(i, []) for i in l if i not in used]))
