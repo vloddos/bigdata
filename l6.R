@@ -1,0 +1,41 @@
+#1
+print(length(d$Sex[d$Sex=='male']))
+print(length(d$Sex[d$Sex=='female']))
+#2
+sd(d$Pclass)
+sd(d[d$Sex=='male',]$Pclass)
+sd(d[d$Sex=='female',]$Pclass)
+dim(d[d$Sex=='male'&d$Pclass==2,])[1]
+#3
+round(median(d$Fare),2)
+round(sd(d$Fare),2)
+#4
+#доли!!!
+s=d[d$Age<30,]$Survived
+length(s[s!=0])
+s=d[d$Age>60,]$Survived
+length(s[s!=0])
+#5
+s=d[d$Sex=='male',]$Survived
+length(s[s!=0])
+s=d[d$Sex=='female',]$Survived
+length(s[s!=0])
+#6
+getmode=function(v){
+  u=unique(v)
+  u[which.max(tabulate(match(v,u)))]
+}
+getmode(
+  sapply(
+    as.character(d[d$Sex=='male',]$Name),
+    function(s){strsplit(s,',')[[1]][1]}
+  )
+)
+#7
+#8
+mean(na.omit(d[d$Pclass==1&d$Sex=='male',]$Age))
+mean(na.omit(d[d$Pclass==1&d$Sex=='female',]$Age))
+mean(na.omit(d[d$Pclass==2&d$Sex=='male',]$Age))
+mean(na.omit(d[d$Pclass==2&d$Sex=='female',]$Age))
+mean(na.omit(d[d$Pclass==3&d$Sex=='male',]$Age))
+mean(na.omit(d[d$Pclass==3&d$Sex=='female',]$Age))
